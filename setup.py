@@ -31,9 +31,10 @@ setup(
         [console_scripts]
         musicapp=musicapp.cli:cli
     """,
-    install_requires=["click"],
-    extras_require={
-        "test": ["pytest"]
-    },
+    install_requires=[
+        "click",
+        "libpytunes@git+https://github.com/anirudhra/libpytunes",
+    ],
+    extras_require={"test": ["pytest"]},
     python_requires=">=3.7",
 )
