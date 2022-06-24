@@ -1,4 +1,5 @@
 import click
+from tabulate import tabulate
 
 from .fabric import missing_fabric_content
 
@@ -16,5 +17,8 @@ def fabric():
 
 @fabric.command(name="missing")
 def missing_fabric():
-    for k, v in missing_fabric_content().items():
-        click.echo(f"{k}: {v}")
+    output_table = tabulate(
+        missing_fabric_content().items(), headers=["Release", "Name"]
+    )
+
+    click.echo(output_table)
