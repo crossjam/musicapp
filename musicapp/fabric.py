@@ -5,8 +5,10 @@ from pathlib import Path
 
 from libpytunes import Library
 
+# create exceptions for LibFileNotFound and FabricDirectoryDoesNotExist
 
-def itunes_fabric_playlists(itunes_lib_path="./iTunes-Library.xml"):
+
+def fabric_itunes_playlists(itunes_lib_path="./iTunes-Library.xml"):
 
     fabric_rgx = re.compile(r"(.+): fabric (\d+)$")
 
@@ -24,7 +26,7 @@ def itunes_fabric_playlists(itunes_lib_path="./iTunes-Library.xml"):
     return res
 
 
-def directory_fabric_playlists(itunes_dir_path="."):
+def fabric_directory_folders(itunes_dir_path="."):
     fabric_rgx = re.compile(r"^fabric (\d+) - (.+)$")
 
     res = {}
@@ -39,8 +41,8 @@ def directory_fabric_playlists(itunes_dir_path="."):
 
 
 def missing_fabric_content(itunes_dir_path=".", itunes_lib_path="./iTunes-Library.xml"):
-    itunes_lists = itunes_fabric_playlists(itunes_lib_path)
-    dir_lists = directory_fabric_playlists(itunes_dir_path)
+    itunes_lists = fabric_itunes_playlists(itunes_lib_path)
+    dir_lists = fabric_directory_folders(itunes_dir_path)
 
     missing_releases = sorted(set(dir_lists.keys()) - set(itunes_lists.keys()))
 
