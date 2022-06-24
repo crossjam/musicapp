@@ -1,5 +1,7 @@
 import click
 
+from .fabric import missing_fabric_content
+
 
 @click.group()
 @click.version_option()
@@ -7,15 +9,6 @@ def cli():
     "Tools For Music.app Data"
 
 
-@cli.command(name="command")
-@click.argument(
-    "example"
-)
-@click.option(
-    "-o",
-    "--option",
-    help="An example option",
-)
-def first_command(example, option):
-    "Command description goes here"
-    click.echo("Here is some output")
+@cli.command(name="missing-fabric")
+def missing_fabric():
+    print(missing_fabric_content())
