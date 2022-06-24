@@ -9,6 +9,12 @@ def cli():
     "Tools For Music.app Data"
 
 
-@cli.command(name="missing-fabric")
+@cli.group("fabric")
+def fabric():
+    pass
+
+
+@fabric.command(name="missing")
 def missing_fabric():
-    print(missing_fabric_content())
+    for k, v in missing_fabric_content().items():
+        click.echo(f"{k}: {v}")
