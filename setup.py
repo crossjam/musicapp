@@ -34,6 +34,7 @@ setup(
     install_requires=[
         "click",
         "libpytunes@git+https://github.com/anirudhra/libpytunes",
+        "tabulate",
     ],
     extras_require={"test": ["pytest"]},
     python_requires=">=3.7",
