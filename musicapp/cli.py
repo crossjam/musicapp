@@ -1,3 +1,4 @@
+import csv
 import json
 import logging
 import sys
@@ -52,6 +53,11 @@ def missing_fabric(tablefmt):
         for row in rows:
             json.dump(row, sys.stdout)
             print()
+    elif tablefmt == "csv":
+        writer = csv.writer(sys.stdout)
+        writer.writerow(["release", "title"])
+        for k, v in missing_fabric_content().items():
+            writer.writerow([k, v])
     else:
         output_table = tabulate(
             missing_fabric_content().items(),
