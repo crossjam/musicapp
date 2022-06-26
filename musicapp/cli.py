@@ -6,7 +6,13 @@ import sys
 import click
 from tabulate import tabulate
 
-from .fabric import missing_fabric_content
+from .fabric import (
+    missing_fabric_content,
+    FABRICLIVE_DIR_RGX,
+    FABRICLIVE_PLAYLIST_RGX,
+    FABRIC_DIR_RGX,
+    FABRIC_PLAYLIST_RGX,
+)
 from .logconfig import DEFAULT_LOG_FORMAT, logging_config
 
 
@@ -45,8 +51,18 @@ def fabric(fabriclive):
 
 @fabric.command(name="missing")
 @click.option("--fmt", "tablefmt", help="Table format", default="simple")
-def missing_fabric(tablefmt):
+@click.pass_context
+def missing_fabric(ctx, tablefmt):
     logging.debug("tablefmt: %s", tablefmt)
+    logging.debug("params: %s", ctx.params)
+    logging.debug("parent params: %s", ctx.parent.params)
+
+    if ctx.parent.params.get("fabriclive", False):
+        dir_rgx_str = FABRICLIVE_DIR_RGX
+        playlist_rgx_str = FABRICLIVE_PLAYLIST_RGX
+    else:
+        dir_rgx_str = FABRIC_DIR_RGX
+        playlist_rgx_str = FABRIC_PLAYLIST_RGX
 
     if tablefmt == "json":
         rows = [{"release": k, "title": v} for k, v in missing_fabric_content().items()]
@@ -56,7 +72,9 @@ def missing_fabric(tablefmt):
     elif tablefmt == "csv":
         writer = csv.writer(sys.stdout)
         writer.writerow(["release", "title"])
-        for k, v in missing_fabric_content().items():
+        for k, v in missing_fabric_content(
+            playlist_rgx_str=playlist_rgx_str, dir_rgx_str=dir_rgx_str
+        ).items():
             writer.writerow([k, v])
     else:
         output_table = tabulate(
