@@ -18,7 +18,8 @@ FABRIC_PLAYLIST_RGX = r"(?P<artist>.+): (?P<series>(?:fabric)) (?P<release>\d+)$
 
 
 def fabric_itunes_playlists(
-    itunes_lib_path="./iTunes-Library.xml", rgx_str=r"(.+): fabric (\d+)$"
+    itunes_lib_path="./iTunes-Library.xml",
+    rgx_str=FABRIC_PLAYLIST_RGX,
 ):
 
     fabric_rgx = re.compile(rgx_str)
@@ -37,13 +38,16 @@ def fabric_itunes_playlists(
             m.group("release"),
         )
         res[
-            int(playlist_release)
+            (series, int(playlist_release))
         ] = f"{series} {int(playlist_release)} - {playlist_artist}"
 
     return res
 
 
-def fabric_directory_folders(itunes_dir_path=".", rgx_str=r"^fabric (\d+) - (.+)$"):
+def fabric_directory_folders(
+    itunes_dir_path=".",
+    rgx_str=FABRIC_DIR_RGX,
+):
     fabric_rgx = re.compile(rgx_str)
 
     res = {}
@@ -57,7 +61,7 @@ def fabric_directory_folders(itunes_dir_path=".", rgx_str=r"^fabric (\d+) - (.+)
             m.group("release"),
         )
         res[
-            int(playlist_release)
+            (series, int(playlist_release))
         ] = f"{series} {int(playlist_release)} - {playlist_artist}"
 
     return res
@@ -66,8 +70,8 @@ def fabric_directory_folders(itunes_dir_path=".", rgx_str=r"^fabric (\d+) - (.+)
 def missing_fabric_content(
     itunes_dir_path=".",
     itunes_lib_path="./iTunes-Library.xml",
-    playlist_rgx_str=r"(?P<title>.+): (?P<series>(?i:fabric[a-z]*)) (?P<release>\d+)$",
-    dir_rgx_str=r"^(?P<series>(?i:fabric[a-z]*)) (?P<release>\d+) - (?P<title>.+)$",
+    playlist_rgx_str=FABRIC_PLAYLIST_RGX,
+    dir_rgx_str=FABRIC_DIR_RGX,
 ):
     logging.debug("playlist_rgx: %s, dir_rgx: %s", playlist_rgx_str, dir_rgx_str)
     itunes_lists = fabric_itunes_playlists(itunes_lib_path, playlist_rgx_str)
@@ -75,4 +79,5 @@ def missing_fabric_content(
 
     missing_releases = sorted(set(dir_lists.keys()) - set(itunes_lists.keys()))
 
+    logging.debug("Missing release count: %d", len(missing_releases))
     return dict(((k, dir_lists[k]) for k in missing_releases))

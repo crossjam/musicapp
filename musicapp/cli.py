@@ -65,17 +65,20 @@ def missing_fabric(ctx, tablefmt):
         playlist_rgx_str = FABRIC_PLAYLIST_RGX
 
     if tablefmt == "json":
-        rows = [{"release": k, "title": v} for k, v in missing_fabric_content().items()]
+        rows = [
+            {"release": num, "series": series, "title": title}
+            for (series, num), title in missing_fabric_content().items()
+        ]
         for row in rows:
             json.dump(row, sys.stdout)
             print()
     elif tablefmt == "csv":
         writer = csv.writer(sys.stdout)
-        writer.writerow(["release", "title"])
-        for k, v in missing_fabric_content(
+        writer.writerow(["series", "release", "title"])
+        for (series, release), title in missing_fabric_content(
             playlist_rgx_str=playlist_rgx_str, dir_rgx_str=dir_rgx_str
         ).items():
-            writer.writerow([k, v])
+            writer.writerow([series, release, title])
     else:
         output_table = tabulate(
             missing_fabric_content().items(),
