@@ -67,7 +67,9 @@ def missing_fabric(ctx, tablefmt):
     if tablefmt == "json":
         rows = [
             {"release": num, "series": series, "title": title}
-            for (series, num), title in missing_fabric_content().items()
+            for (series, num), title in missing_fabric_content(
+                playlist_rgx_str=playlist_rgx_str, dir_rgx_str=dir_rgx_str
+            ).items()
         ]
         for row in rows:
             json.dump(row, sys.stdout)
@@ -81,7 +83,9 @@ def missing_fabric(ctx, tablefmt):
             writer.writerow([series, release, title])
     else:
         output_table = tabulate(
-            missing_fabric_content().items(),
+            missing_fabric_content(
+                playlist_rgx_str=playlist_rgx_str, dir_rgx_str=dir_rgx_str
+            ).items(),
             headers=["Release", "Title"],
             tablefmt=tablefmt,
         )
